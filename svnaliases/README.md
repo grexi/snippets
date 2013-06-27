@@ -1,7 +1,23 @@
 SVN branching aliases
 =====================
 
-small examples:
+SVN branching is a little painful on the command line. For all those who worked with giti
+a single minute of their lives, it's really frustrating. 
+
+But it doesn't need to be so complicated. This bash aliases (they work on zsh, too) provide
+commands for easier svn branching, merging and reintegrating.
+
+Installing
+==========
+
+Fetch the branchit.rc file into your home directory and integrate it into your dotfile (.bashrc or .zshrc)
+
+    . ~/branchit.rc
+
+Restart your shell and off you go!
+
+Examples
+========
 
 create a branch:
 
