@@ -1,0 +1,97 @@
+# bash aliases to make svn branching less painful
+# Gregor Dorfbauer, gd@usersnap.com
+# http://usersnap.com
+# 2013-06-12: Initial Version
+# 2013-06-24: calling it from anywhere inside the working directory is possible
+
+function getrepo {
+    REPO=`LANG=C svn info | grep "Repository Root"`
+    echo ${REPO:17}
+}
+
+function getrepobase {
+   parent=""
+   grandparent="."
+   while [ -d "$grandparent/.svn" ]; do
+      parent=$grandparent
+      grandparent="$parent/.."
+   done
+   echo $parent
+}
+
+function _svnbr {
+    if [ $# != 2 ]; then
+        echo "Usage: $0 branchname \"commit message\""
+    else
+        REPO=$(getrepo)
+        if [ -z "$REPO" ]; then
+            echo "You are not inside a svn working copy"
+            return;
+        fi
+        svn copy $REPO/trunk $REPO/branches/$1 -m "$2"
+        svn switch $REPO/branches/$1 $(getrepobase)
+    fi
+}
+alias svnbr=_svnbr
+
+function _svndelbr {
+    if [ $# != 2 ]; then
+        echo "Usage: $0 branchname \"commit message\""
+    else
+        REPO=$(getrepo)
+        if [ -z "$REPO" ]; then
+            echo "You are not inside a svn working copy"
+            return;
+        fi
+        svn delete $REPO/branches/$1 -m "$2"
+    fi
+}
+alias svndelbr=_svndelbr
+
+function _svnupbr {
+    REPO=$(getrepo)
+    if [ -z "$REPO" ]; then
+        echo "You are not inside a svn working copy"
+        return;
+    fi
+    svn merge $REPO/trunk $(getrepobase)
+}
+alias svnupbr=_svnupbr
+
+function _svnsw {
+    REPO=$(getrepo)
+    if [ -z "$REPO" ]; then
+        echo "You are not inside a svn working copy"
+        return;
+    fi
+    svn switch $REPO/$1 $(getrepobase)
+}
+alias svnsw=_svnsw
+
+function _svnre {
+    if [ $# -lt 1 ]; then
+        echo "Usage $0 branchname [\"commit message\"]"
+        return
+    fi
+    REPO=$(getrepo)
+    if [ -z "$REPO" ]; then
+        echo "You are not inside a svn working copy"
+        return;
+    fi
+    SVNST=`svn st`    
+    if [ "$SVNST" != "" ]; then
+        echo "you have changes in your working copy."
+        svn st
+        return
+    fi
+    
+    svn switch $REPO/trunk $(getrepobase)
+    svn merge --reintegrate $REPO/branches/$1 $(getrepobase)
+    if [ $# == 2 ]; then
+        svn ci -m "$2" $(getrepobase)
+    else
+        svn ci $(getrepobase)
+    fi
+}
+alias svnre=_svnre
+
