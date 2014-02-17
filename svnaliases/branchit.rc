@@ -1,8 +1,9 @@
 # bash aliases to make svn branching less painful
 # Gregor Dorfbauer, gd@usersnap.com
-# http://usersnap.com
+# https://usersnap.com
 # 2013-06-12: Initial Version
 # 2013-06-24: calling it from anywhere inside the working directory is possible
+# 2014-02-17: Support for svn 1.8 working copy format (single .svn directory) - #1
 
 function getrepo {
     REPO=`LANG=C svn info | grep "Repository Root"`
@@ -10,13 +11,28 @@ function getrepo {
 }
 
 function getrepobase {
-   parent=""
-   grandparent="."
-   while [ -d "$grandparent/.svn" ]; do
-      parent=$grandparent
-      grandparent="$parent/.."
-   done
-   echo $parent
+   if [ "`LANG=C svn info | grep -c Relative`" -gt 0 ]; 
+   then
+      parent=".."
+      grandparent=".."
+      if [ -d ".svn" ]; then
+          echo ""
+      else
+          while [ ! -d "$grandparent/.svn" ]; do
+              parent=$grandparent
+              grandparent="$parent/.."
+          done
+          echo $grandparent
+     fi
+   else
+      parent=""
+      grandparent="."
+      while [ -d "$grandparent/.svn" ]; do
+          parent=$grandparent
+          grandparent="$parent/.."
+      done
+      echo $parent
+   fi
 }
 
 function _svnbr {
