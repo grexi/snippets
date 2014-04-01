@@ -57,4 +57,5 @@ Meta
 ====
 Maintained by Gregor Dorfbauer [@dorfbauer](https://twitter.com/dorfbauer)
 
-If you like those scripts, have a look at my startup [Usersnap](https://usersnap.com/?gat=github)
+If you like those scripts, have a look at my startup [Usersnap](https://usersnap.com/?gat=github).
+And yes, Usersnap has a very nice [Trac Integration](https://usersnap.com/trac), too.
