@@ -42,6 +42,6 @@ Reintegrate a branch back into the trunk:
 
 Meta
 ====
-Maintained by Gregor Dorfbauer @dorfbauer
+Maintained by Gregor Dorfbauer [@dorfbauer](https://twitter.com/dorfbauer)
 
 If you like those scripts, have a look at my startup [Usersnap](http://usersnap.com)
